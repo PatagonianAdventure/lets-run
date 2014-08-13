@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by gazer on 8/12/14.
@@ -15,8 +16,10 @@ public class Terrain {
     private final Vector2[] heights;
     CatmullRomSpline<Vector2> coordinates;
 
-    public Terrain(float length) {
+    public Terrain(float length, long seed) {
         this.length = length;
+
+        Random rnd = new Random(seed);
 
         // TODO : We need a better way of handle this mess :)
         ArrayList<Vector2> points = new ArrayList<Vector2>();
@@ -25,7 +28,7 @@ public class Terrain {
             if (w < length * 0.05f) {
                 points.add(new Vector2(w, 2.0f));
             } else {
-                points.add(new Vector2(w, (float) (0.2f + 12.0f * Math.random())));
+                points.add(new Vector2(w, (float) (0.2f + 12.0f * rnd.nextFloat())));
             }
             w += length/50;
         }

@@ -17,9 +17,12 @@ import com.badlogic.gdx.physics.box2d.joints.WheelJointDef;
  */
 public class Car {
     private final CircleShape wheelShape;
+    private final PolygonShape chassisShape;
+    private final float width;
+    private final float height;
     private Body chassis, leftWheel, rigthWheel;
     private WheelJoint leftAxis, rightAxis;
-    private float motorSpeed = 75f;
+    private float motorSpeed = 50f;
 
     public Car(World world, FixtureDef chassisFixtureDef, FixtureDef wheelFixtureDef, float x, float y, float width, float height) {
         BodyDef bodyDef = new BodyDef();
@@ -27,9 +30,10 @@ public class Car {
         bodyDef.position.set(x, y);
 
         // chassis
-        PolygonShape chassisShape = new PolygonShape();
+        chassisShape = new PolygonShape();
         // counterclockwise order
-        chassisShape.set(new float[] {-width/2, -height/2, width/2, -height/2, width/2*0.4f, height/2, -width/2*0.8f, height/2*0.8f});
+        // chassisShape.set(new float[] {-width/2, -height/2, width/2, -height/2, width/2, height/2, -width/2, height/2});
+        chassisShape.setAsBox(width/2, height/2);
 
         chassisFixtureDef.shape = chassisShape;
 
@@ -53,18 +57,21 @@ public class Car {
         WheelJointDef axisDef = new WheelJointDef();
         axisDef.bodyA = chassis;
         axisDef.bodyB = leftWheel;
-        axisDef.localAnchorA.set(-width/2 *0.9f + wheelShape.getRadius(), -height/2 * 1.25f);
-        axisDef.frequencyHz = chassisFixtureDef.density;
+        axisDef.localAnchorA.set(-width/2 *0.65f + wheelShape.getRadius(), -height/2*1.1f);
+        axisDef.frequencyHz = chassisFixtureDef.density * 1.2f;
         axisDef.localAxisA.set(Vector2.Y);
-        axisDef.maxMotorTorque = chassisFixtureDef.density * 50;
+        axisDef.maxMotorTorque = chassisFixtureDef.density * 17;
 
         leftAxis = (WheelJoint) world.createJoint(axisDef);
 
         // rigth axis
         axisDef.bodyB = rigthWheel;
-        axisDef.localAnchorA.x *= -1;
+        axisDef.localAnchorA.set(width/2 *0.9f - wheelShape.getRadius(), -height/2*1.1f);
 
         rightAxis = (WheelJoint) world.createJoint(axisDef);
+
+        this.width = width;
+        this.height = height;
     }
 
     public void accelerate(boolean b) {
@@ -90,5 +97,11 @@ public class Car {
         sprite.setSize(wheelShape.getRadius()*2, wheelShape.getRadius()*2);
         leftWheel.setUserData(sprite);
         rigthWheel.setUserData(sprite);
+    }
+
+    public void setChassisSprite(Sprite sprite) {
+        sprite.setSize(width, height);
+        sprite.setPosition(0, height/2);
+        chassis.setUserData(sprite);
     }
 }

@@ -19,9 +19,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
@@ -43,7 +41,8 @@ public class GameScreen extends InputAdapter implements Screen {
     private final int height;
     private final int width;
     private final Box2DDebugRenderer renderer;
-    private final Sprite sprite;
+    private final Sprite spriteWheel;
+    private final Sprite spriteChassis;
     private final Preferences prefs;
     private float highDistance;
     private LetsRunGame game;
@@ -79,11 +78,8 @@ public class GameScreen extends InputAdapter implements Screen {
         camera.update();
 
     	/* Set box texture */
-        sprite = new Sprite(new Texture("wheel.png"));
-        /*
-         * Sets the origin in relation to the sprite's position for scaling and
-         * rotation.
-         */
+        spriteWheel = new Sprite(new Texture("wheel.png"));
+        spriteChassis = new Sprite(new Texture("chassis.png"));
 
         createPhysics();
     }
@@ -124,10 +120,10 @@ public class GameScreen extends InputAdapter implements Screen {
 
         renderer.render(world, camera.combined);
 
-        	/*
-             * Set projection matrix to camera.combined, the same way we did with
-             * the debug renderer.
-             */
+        /*
+         * Set projection matrix to camera.combined, the same way we did with
+         * the debug renderer.
+         */
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
         /* Get word bodies */
@@ -147,11 +143,9 @@ public class GameScreen extends InputAdapter implements Screen {
                 sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
 
                 Vector2 position = body.getPosition();
-                sprite.setPosition(position.x - sprite.getWidth() / 2,
-                        position.y - sprite.getWidth() / 2);
-                /* Set sprite rotation equals to body rotation */
+                sprite.setPosition(position.x - sprite.getWidth() / 2, position.y - sprite.getHeight() / 2);
                 sprite.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
-                /* Draw the sprite on screen */
+                /* Draw on screen */
                 sprite.draw(game.batch);
             }
         }
@@ -199,7 +193,7 @@ public class GameScreen extends InputAdapter implements Screen {
     private FixtureDef sliceFixture = new FixtureDef();
 
     private void createPhysics() {
-        terrain = new Terrain(500);
+        terrain = new Terrain(500, 261119780);
 
         world = new World(new Vector2(0, -10), true);
         BodyDef bodyDef = new BodyDef();
@@ -220,8 +214,9 @@ public class GameScreen extends InputAdapter implements Screen {
         wheelFixtureDef.friction = 50;
         wheelFixtureDef.restitution = 0.4f;
 
-        car = new Car(world, fixtureDef, wheelFixtureDef, 5, height, 5, 2.25f);
-        car.setWheelSprite(sprite);
+        car = new Car(world, fixtureDef, wheelFixtureDef, 5, height, 4, 1.42f);
+        car.setWheelSprite(spriteWheel);
+        car.setChassisSprite(spriteChassis);
     }
 
     private float nextY = -1;
