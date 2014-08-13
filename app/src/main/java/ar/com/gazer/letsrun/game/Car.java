@@ -1,11 +1,9 @@
 package ar.com.gazer.letsrun.game;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -20,7 +18,7 @@ public class Car {
     private final PolygonShape chassisShape;
     private final float width;
     private final float height;
-    private Body chassis, leftWheel, rigthWheel;
+    private Body chassis, leftWheel, rightWheel;
     private WheelJoint leftAxis, rightAxis;
     private float motorSpeed = 50f;
 
@@ -50,8 +48,8 @@ public class Car {
         leftWheel.createFixture(wheelFixtureDef);
 
         // right wheel
-        rigthWheel = world.createBody(bodyDef);
-        rigthWheel.createFixture(wheelFixtureDef);
+        rightWheel = world.createBody(bodyDef);
+        rightWheel.createFixture(wheelFixtureDef);
 
         // left axis
         WheelJointDef axisDef = new WheelJointDef();
@@ -65,7 +63,7 @@ public class Car {
         leftAxis = (WheelJoint) world.createJoint(axisDef);
 
         // rigth axis
-        axisDef.bodyB = rigthWheel;
+        axisDef.bodyB = rightWheel;
         axisDef.localAnchorA.set(width/2 *0.9f - wheelShape.getRadius(), -height/2*1.1f);
 
         rightAxis = (WheelJoint) world.createJoint(axisDef);
@@ -88,20 +86,23 @@ public class Car {
         return chassis;
     }
 
-    public void setWheelSprite(Sprite sprite) {
-        /*
-         * Set the size of the sprite. We have to remember that we are not
-         * working in pixels, but with meters. The size of the sprite will be
-         * the same as the size of the box; 1 meter wide, 1 meters tall.
-         */
-        sprite.setSize(wheelShape.getRadius()*2, wheelShape.getRadius()*2);
-        leftWheel.setUserData(sprite);
-        rigthWheel.setUserData(sprite);
+    public Body getLeftWheel() {
+        return leftWheel;
     }
 
-    public void setChassisSprite(Sprite sprite) {
-        sprite.setSize(width, height);
-        sprite.setPosition(0, height/2);
-        chassis.setUserData(sprite);
+    public Body getRightWheel() {
+        return rightWheel;
+    }
+
+    public float getWheelRadius() {
+        return wheelShape.getRadius();
+    }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
     }
 }

@@ -1,4 +1,4 @@
-package ar.com.gazer.letsrun.game;
+package ar.com.gazer.letsrun;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;

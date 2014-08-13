@@ -19,12 +19,14 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
+import ar.com.gazer.letsrun.Renderers.CarRenderer;
 import ar.com.gazer.letsrun.game.Car;
-import ar.com.gazer.letsrun.game.LetsRunGame;
+import ar.com.gazer.letsrun.LetsRunGame;
 import ar.com.gazer.letsrun.game.Terrain;
 
 /**
@@ -41,20 +43,19 @@ public class GameScreen extends InputAdapter implements Screen {
     private final int height;
     private final int width;
     private final Box2DDebugRenderer renderer;
-    private final Sprite spriteWheel;
-    private final Sprite spriteChassis;
     private final Preferences prefs;
+    private final Sprite spriteGround;
     private float highDistance;
     private LetsRunGame game;
     private World world;
     private Body groundBody;
 
-    private Array<Body> worldBodies;
     private Car car;
     private float lastCameraPosition;
 
     private float distance = 0;
     private Terrain terrain;
+    private CarRenderer carRenderer;
 
     public GameScreen(LetsRunGame game) {
         this.game = game;
@@ -78,10 +79,14 @@ public class GameScreen extends InputAdapter implements Screen {
         camera.update();
 
     	/* Set box texture */
-        spriteWheel = new Sprite(new Texture("wheel.png"));
-        spriteChassis = new Sprite(new Texture("chassis.png"));
+        spriteGround = new Sprite(new Texture("ground.png"));
 
         createPhysics();
+        createRenderers();
+    }
+
+    private void createRenderers() {
+        carRenderer = new CarRenderer(car);
     }
 
     @Override
@@ -118,7 +123,7 @@ public class GameScreen extends InputAdapter implements Screen {
         Gdx.gl.glClearColor( 0.2f, 0.2f, 0.2f, 1f );
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        renderer.render(world, camera.combined);
+        // renderer.render(world, camera.combined);
 
         /*
          * Set projection matrix to camera.combined, the same way we did with
@@ -126,28 +131,21 @@ public class GameScreen extends InputAdapter implements Screen {
          */
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
-        /* Get word bodies */
-        world.getBodies(worldBodies);
-        /*
-         * For each body in the world we have to check if it has user data
-         * associated and if it is an Sprite. In that case, we draw it in the
-         * screen.
-         */
-        for (Body body : worldBodies) {
-            if (body.getUserData() instanceof Sprite) {
-                Sprite sprite = (Sprite) body.getUserData();
-                /*
-                 * Set body position equals to box position. We also need to
-                 * center it in the box (measures are relative to body center).
-                 */
-                sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
 
-                Vector2 position = body.getPosition();
-                sprite.setPosition(position.x - sprite.getWidth() / 2, position.y - sprite.getHeight() / 2);
-                sprite.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
-                /* Draw on screen */
-                sprite.draw(game.batch);
-            }
+        carRenderer.render(game.batch);
+
+        Vector2 v1 = new Vector2();
+        Vector2 v2 = new Vector2();
+        for(Fixture f : groundBody.getFixtureList()) {
+            EdgeShape shape = (EdgeShape) f.getShape();
+            shape.getVertex1(v1);
+            shape.getVertex2(v2);
+            float w = v2.x - v1.x;
+            float h = Math.min(v2.y, v1.y);
+            spriteGround.setSize(w, h);
+            spriteGround.setPosition(v1.x, 0);
+            spriteGround.draw(game.batch);
+
         }
         game.batch.end();
 
@@ -215,8 +213,6 @@ public class GameScreen extends InputAdapter implements Screen {
         wheelFixtureDef.restitution = 0.4f;
 
         car = new Car(world, fixtureDef, wheelFixtureDef, 5, height, 4, 1.42f);
-        car.setWheelSprite(spriteWheel);
-        car.setChassisSprite(spriteChassis);
     }
 
     private float nextY = -1;
@@ -241,9 +237,6 @@ public class GameScreen extends InputAdapter implements Screen {
     public void show() {
         Gdx.input.setInputProcessor(this);
         Gdx.input.setCatchBackKey(true);
-
-	    /* Instantiate the array of bodies that will be used during render step */
-        worldBodies = new Array<Body>();
     }
 
     @Override

@@ -1,20 +1,11 @@
 package ar.com.gazer.letsrun;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Handler;
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.os.Bundle;
 import android.view.View;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
-
-import ar.com.gazer.letsrun.game.LetsRunGame;
 
 public class GameActivity extends AndroidApplication {
     private View mDecorView;
