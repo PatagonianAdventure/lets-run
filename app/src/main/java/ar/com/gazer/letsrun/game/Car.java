@@ -88,7 +88,7 @@ public class Car {
          * the same as the size of the box; 1 meter wide, 1 meters tall.
          */
         sprite.setSize(wheelShape.getRadius()*2, wheelShape.getRadius()*2);
-        //leftWheel.setUserData(sprite);
-        //rigthWheel.setUserData(sprite);
+        leftWheel.setUserData(sprite);
+        rigthWheel.setUserData(sprite);
     }
 }

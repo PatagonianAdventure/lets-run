@@ -18,6 +18,7 @@ public class Terrain {
     public Terrain(float length) {
         this.length = length;
 
+        // TODO : We need a better way of handle this mess :)
         ArrayList<Vector2> points = new ArrayList<Vector2>();
         int w = 0;
         while (w < length) {

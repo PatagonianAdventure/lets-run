@@ -30,10 +30,15 @@ import ar.com.gazer.letsrun.game.LetsRunGame;
 import ar.com.gazer.letsrun.game.Terrain;
 
 /**
+ * Main game screen.
+ *
+ * This is the screen where the fun comes to life :).
+ *
+ * TODO : We need to cleanup this class
+ *
  * Created by gazer on 8/9/14.
  */
 public class GameScreen extends InputAdapter implements Screen {
-    private static final float STEP = 2.0f;
     private final OrthographicCamera camera;
     private final int height;
     private final int width;
@@ -44,7 +49,6 @@ public class GameScreen extends InputAdapter implements Screen {
     private LetsRunGame game;
     private World world;
     private Body groundBody;
-    private float needToCreateStuff;
 
     private Array<Body> worldBodies;
     private Car car;
@@ -80,7 +84,6 @@ public class GameScreen extends InputAdapter implements Screen {
          * Sets the origin in relation to the sprite's position for scaling and
          * rotation.
          */
-        sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
 
         createPhysics();
     }
@@ -141,6 +144,8 @@ public class GameScreen extends InputAdapter implements Screen {
                  * Set body position equals to box position. We also need to
                  * center it in the box (measures are relative to body center).
                  */
+                sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
+
                 Vector2 position = body.getPosition();
                 sprite.setPosition(position.x - sprite.getWidth() / 2,
                         position.y - sprite.getWidth() / 2);
@@ -178,9 +183,6 @@ public class GameScreen extends InputAdapter implements Screen {
 
         // FIX YOUR STEPS!
         world.step(delta, 8, 3);
-
-        final float posX = camera.position.x - width;
-        final float posY = camera.position.y;
 
         lastCameraPosition = camera.position.x;
     }
