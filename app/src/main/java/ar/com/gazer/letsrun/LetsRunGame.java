@@ -11,13 +11,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import ar.com.gazer.letsrun.screens.GameScreen;
+import ar.com.gazer.letsrun.screens.MenuScreen;
 
 /**
  * Created by gazer on 8/8/14.
  */
 public class LetsRunGame extends Game {
 
-    private GameScreen gameScreen;
     public SpriteBatch batch;
     public SpriteBatch hudBatch;
     public ShapeRenderer shapes;
@@ -30,15 +30,17 @@ public class LetsRunGame extends Game {
         shapes = new ShapeRenderer();
         font = new BitmapFont();
 
-        gameScreen = new GameScreen(this);
-        setScreen(gameScreen);
+        setScreen(new MenuScreen(this));
     }
 
     @Override
     public void dispose() {
-        gameScreen.dispose();
         batch.dispose();
         shapes.dispose();
         super.dispose();
+    }
+
+    public void playSolo() {
+        setScreen(new GameScreen(this));
     }
 }

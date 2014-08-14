@@ -212,7 +212,7 @@ public class GameScreen extends InputAdapter implements Screen {
         wheelFixtureDef.friction = 50;
         wheelFixtureDef.restitution = 0.4f;
 
-        car = new Car(world, fixtureDef, wheelFixtureDef, 5, height, 4, 1.42f);
+        car = new Car(world, fixtureDef, wheelFixtureDef, 5, 3, 4, 1.42f);
     }
 
     private float nextY = -1;
