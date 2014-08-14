@@ -138,12 +138,13 @@ public class GameScreen extends InputAdapter implements Screen {
             EdgeShape shape = (EdgeShape) f.getShape();
             shape.getVertex1(v1);
             shape.getVertex2(v2);
-            float w = v2.x - v1.x;
-            float h = Math.min(v2.y, v1.y);
-            spriteGround.setSize(w, h + 10);
-            spriteGround.setPosition(v1.x, -10);
-            spriteGround.draw(game.batch);
-
+            for(float t = 0f; t <= 1; t += 0.1f) {
+                float w = 0.1f; //v2.x - v1.x;
+                float h = v1.y + t * (v2.y - v1.y); //Math.min(v2.y, v1.y);
+                spriteGround.setSize(w, h + 10);
+                spriteGround.setPosition(v1.x + t * (v2.x - v1.x), -10);
+                spriteGround.draw(game.batch);
+            }
         }
         game.batch.end();
 
