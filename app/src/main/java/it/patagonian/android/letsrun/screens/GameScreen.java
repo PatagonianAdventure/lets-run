@@ -1,4 +1,4 @@
-package ar.com.gazer.letsrun.screens;
+package it.patagonian.android.letsrun.screens;
 
 import android.util.Log;
 
@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -22,12 +21,11 @@ import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
 
-import ar.com.gazer.letsrun.Renderers.CarRenderer;
-import ar.com.gazer.letsrun.game.Car;
-import ar.com.gazer.letsrun.LetsRunGame;
-import ar.com.gazer.letsrun.game.Terrain;
+import it.patagonian.android.letsrun.renderers.CarRenderer;
+import it.patagonian.android.letsrun.game.Car;
+import it.patagonian.android.letsrun.LetsRunGame;
+import it.patagonian.android.letsrun.game.Terrain;
 
 /**
  * Main game screen.

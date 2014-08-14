@@ -1,12 +1,10 @@
-package ar.com.gazer.letsrun.Renderers;
+package it.patagonian.android.letsrun.renderers;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.physics.box2d.Body;
 
-import ar.com.gazer.letsrun.game.Car;
+import it.patagonian.android.letsrun.game.Car;
 
 /**
  * Created by gazer on 8/13/14.

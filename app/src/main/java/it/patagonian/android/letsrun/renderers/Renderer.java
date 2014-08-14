@@ -1,4 +1,4 @@
-package ar.com.gazer.letsrun.Renderers;
+package it.patagonian.android.letsrun.renderers;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

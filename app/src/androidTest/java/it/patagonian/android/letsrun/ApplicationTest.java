@@ -1,4 +1,4 @@
-package ar.com.gazer.letsrun;
+package it.patagonian.android.letsrun;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

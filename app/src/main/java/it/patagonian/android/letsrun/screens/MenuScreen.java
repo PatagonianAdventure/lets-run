@@ -1,4 +1,4 @@
-package ar.com.gazer.letsrun.screens;
+package it.patagonian.android.letsrun.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
-import ar.com.gazer.letsrun.LetsRunGame;
+import it.patagonian.android.letsrun.LetsRunGame;
 
 /**
  * Show the main menu and buttons.

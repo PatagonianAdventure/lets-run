@@ -1,4 +1,4 @@
-package ar.com.gazer.letsrun;
+package it.patagonian.android.letsrun;
 
 import android.os.Handler;
 import android.os.Bundle;

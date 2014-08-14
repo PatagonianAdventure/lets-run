@@ -1,17 +1,12 @@
-package ar.com.gazer.letsrun;
+package it.patagonian.android.letsrun;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-import ar.com.gazer.letsrun.screens.GameScreen;
-import ar.com.gazer.letsrun.screens.MenuScreen;
+import it.patagonian.android.letsrun.screens.GameScreen;
+import it.patagonian.android.letsrun.screens.MenuScreen;
 
 /**
  * Created by gazer on 8/8/14.

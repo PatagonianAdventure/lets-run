@@ -1,4 +1,4 @@
-package ar.com.gazer.letsrun.game;
+package it.patagonian.android.letsrun.game;
 
 import android.util.Log;
 
