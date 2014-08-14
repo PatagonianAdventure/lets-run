@@ -140,8 +140,8 @@ public class GameScreen extends InputAdapter implements Screen {
             shape.getVertex2(v2);
             float w = v2.x - v1.x;
             float h = Math.min(v2.y, v1.y);
-            spriteGround.setSize(w, h);
-            spriteGround.setPosition(v1.x, 0);
+            spriteGround.setSize(w, h + 10);
+            spriteGround.setPosition(v1.x, -10);
             spriteGround.draw(game.batch);
 
         }
