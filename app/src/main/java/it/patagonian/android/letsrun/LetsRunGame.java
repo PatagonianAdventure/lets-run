@@ -17,6 +17,7 @@ public class LetsRunGame extends Game {
     public SpriteBatch hudBatch;
     public ShapeRenderer shapes;
     public BitmapFont font;
+    private MenuScreen menuScreen;
 
     @Override
     public void create () {
@@ -25,7 +26,8 @@ public class LetsRunGame extends Game {
         shapes = new ShapeRenderer();
         font = new BitmapFont();
 
-        setScreen(new MenuScreen(this));
+        menuScreen = new MenuScreen(this);
+        setScreen(menuScreen);
     }
 
     @Override
@@ -37,5 +39,9 @@ public class LetsRunGame extends Game {
 
     public void playSolo() {
         setScreen(new GameScreen(this));
+    }
+
+    public void showMenu() {
+        setScreen(menuScreen);
     }
 }

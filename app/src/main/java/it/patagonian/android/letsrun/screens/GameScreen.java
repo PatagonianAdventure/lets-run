@@ -185,7 +185,7 @@ public class GameScreen extends InputAdapter implements Screen {
     @Override
     public boolean keyUp(int keycode) {
         if (keycode == Input.Keys.BACK) {
-            Gdx.app.exit();
+            game.showMenu();
         }
         return super.keyUp(keycode);
     }
