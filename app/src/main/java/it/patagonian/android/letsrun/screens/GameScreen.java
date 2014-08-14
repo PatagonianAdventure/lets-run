@@ -62,7 +62,7 @@ public class GameScreen extends InputAdapter implements Screen {
 
         highDistance = prefs.getFloat("highDistance");
 
-        height = 20;
+        height = 12;
         float ppu = Gdx.graphics.getHeight() / height;
         width = (int) Math.ceil(Gdx.graphics.getWidth() / ppu);
 
@@ -165,6 +165,10 @@ public class GameScreen extends InputAdapter implements Screen {
     private void update(float delta) {
 
         camera.position.x = car.getChassis().getPosition().x + width/4;
+        camera.position.y = car.getChassis().getPosition().y;
+        /*if (camera.position.y < -height/4) {
+            camera.position.y = -height/4;
+        }*/
         float cameraMovement = camera.position.x - lastCameraPosition;
         distance += cameraMovement;
         highDistance = Math.max(distance, highDistance);
@@ -210,7 +214,7 @@ public class GameScreen extends InputAdapter implements Screen {
         wheelFixtureDef.friction = 50;
         wheelFixtureDef.restitution = 0.4f;
 
-        car = new Car(world, fixtureDef, wheelFixtureDef, 5, 3, 4, 1.42f);
+        car = new Car(world, fixtureDef, wheelFixtureDef, 5, 9, 4, 1.42f);
     }
 
     private float nextY = -1;
