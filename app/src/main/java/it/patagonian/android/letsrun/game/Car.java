@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.WheelJoint;
@@ -37,6 +38,9 @@ public class Car {
 
         chassis = world.createBody(bodyDef);
         chassis.createFixture(chassisFixtureDef);
+        MassData data = chassis.getMassData();
+        data.center.x += width/16;
+        chassis.setMassData(data);
 
         // left wheel
         wheelShape = new CircleShape();
