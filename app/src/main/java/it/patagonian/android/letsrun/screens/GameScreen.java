@@ -85,11 +85,13 @@ public class GameScreen extends InputAdapter implements Screen {
         spriteGround = new Sprite(new Texture("ground.png"));
 
         background = new ParallaxBackground(new ParallaxLayer[]{
-                new ParallaxLayer(new TextureRegion(new Texture("badlogic.jpg")),new Vector2(30, 30),new Vector2(0, 0)),
+                new ParallaxLayer(new TextureRegion(new Texture("backgrounds/day_background.png")),new Vector2(5, 5),new Vector2(0, 0)),
+                new ParallaxLayer(new TextureRegion(new Texture("backgrounds/clouds1.png")),new Vector2(20, 20),new Vector2(0, 0)),
+
                 //new ParallaxLayer(atlas.findRegion("bg2"),new Vector2(1.0f,1.0f),new Vector2(0, 500)),
                 //new ParallaxLayer(atlas.findRegion("bg3"),new Vector2(0.1f,0),new Vector2(0,Constants.HEIGHT-200), new Vector2(0, 0)),
 
-        }, 800, 480,new Vector2(150,10));
+        }, 640, 360,new Vector2(150,10));
 
         createPhysics();
         createRenderers();
