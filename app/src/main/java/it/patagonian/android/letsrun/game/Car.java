@@ -86,6 +86,10 @@ public class Car {
         leftAxis.setMotorSpeed(motorSpeed);
     }
 
+    public Vector2 getSpeed() {
+        return chassis.getLinearVelocity();
+    }
+
     public Body getChassis() {
         return chassis;
     }

@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -22,6 +23,8 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 
+import it.patagonian.android.letsrun.game.background.ParallaxBackground;
+import it.patagonian.android.letsrun.game.background.ParallaxLayer;
 import it.patagonian.android.letsrun.renderers.CarRenderer;
 import it.patagonian.android.letsrun.game.Car;
 import it.patagonian.android.letsrun.LetsRunGame;
@@ -55,6 +58,8 @@ public class GameScreen extends InputAdapter implements Screen {
     private Terrain terrain;
     private CarRenderer carRenderer;
 
+    private ParallaxBackground background;
+
     public GameScreen(LetsRunGame game) {
         this.game = game;
 
@@ -78,6 +83,13 @@ public class GameScreen extends InputAdapter implements Screen {
 
     	/* Set box texture */
         spriteGround = new Sprite(new Texture("ground.png"));
+
+        background = new ParallaxBackground(new ParallaxLayer[]{
+                new ParallaxLayer(new TextureRegion(new Texture("badlogic.jpg")),new Vector2(30, 30),new Vector2(0, 0)),
+                //new ParallaxLayer(atlas.findRegion("bg2"),new Vector2(1.0f,1.0f),new Vector2(0, 500)),
+                //new ParallaxLayer(atlas.findRegion("bg3"),new Vector2(0.1f,0),new Vector2(0,Constants.HEIGHT-200), new Vector2(0, 0)),
+
+        }, 800, 480,new Vector2(150,10));
 
         createPhysics();
         createRenderers();
@@ -122,13 +134,15 @@ public class GameScreen extends InputAdapter implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // renderer.render(world, camera.combined);
-
+        background.render(delta);
         /*
          * Set projection matrix to camera.combined, the same way we did with
          * the debug renderer.
          */
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
+
+
 
         carRenderer.render(game.batch);
 
@@ -164,6 +178,7 @@ public class GameScreen extends InputAdapter implements Screen {
     }
 
     private void update(float delta) {
+        background.speed = car.getSpeed();
 
         camera.position.x = car.getChassis().getPosition().x + width/4;
         camera.position.y = car.getChassis().getPosition().y;
