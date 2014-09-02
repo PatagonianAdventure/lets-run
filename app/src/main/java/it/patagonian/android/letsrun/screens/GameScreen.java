@@ -52,6 +52,7 @@ public class GameScreen extends InputAdapter implements Screen, ContactListener 
     private final Box2DDebugRenderer renderer;
     private final Preferences prefs;
     private final Sprite spriteGround;
+    private final int ppu;
     private float highDistance;
     private LetsRunGame game;
     private World world;
@@ -75,7 +76,7 @@ public class GameScreen extends InputAdapter implements Screen, ContactListener 
         highDistance = prefs.getFloat("highDistance");
 
         height = 12;
-        float ppu = Gdx.graphics.getHeight() / height;
+        ppu = Gdx.graphics.getHeight() / height;
         width = (int) Math.ceil(Gdx.graphics.getWidth() / ppu);
 
         lastCameraPosition = width/4f;
@@ -211,15 +212,20 @@ public class GameScreen extends InputAdapter implements Screen, ContactListener 
     private void update(float delta) {
         background.speed = car.getSpeed();
 
+        // TODO : Use a non-linear interpolator for a better effect.
+        float v = Math.min(car.getSpeed().len(), 10)/3f;
+        float newHeight = height * 10 / (10 - v);
+        float newWidth = width * 10 / (10 - v);
+        camera.setToOrtho(false, newWidth, newHeight);
+
         camera.position.x = car.getChassis().getPosition().x + width/4;
         camera.position.y = car.getChassis().getPosition().y;
-        /*if (camera.position.y < -height/4) {
-            camera.position.y = -height/4;
-        }*/
+
         float cameraMovement = camera.position.x - lastCameraPosition;
         distance += cameraMovement;
         highDistance = Math.max(distance, highDistance);
 
+        //camera.set
         camera.update();
 
         // FIX YOUR STEPS!
