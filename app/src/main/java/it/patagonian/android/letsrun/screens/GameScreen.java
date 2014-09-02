@@ -18,9 +18,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 
 import it.patagonian.android.letsrun.game.background.ParallaxBackground;
@@ -39,7 +43,9 @@ import it.patagonian.android.letsrun.game.Terrain;
  *
  * Created by gazer on 8/9/14.
  */
-public class GameScreen extends InputAdapter implements Screen {
+public class GameScreen extends InputAdapter implements Screen, ContactListener {
+    private static final boolean DEBUG = false;
+
     private final OrthographicCamera camera;
     private final int height;
     private final int width;
@@ -59,6 +65,7 @@ public class GameScreen extends InputAdapter implements Screen {
     private CarRenderer carRenderer;
 
     private ParallaxBackground background;
+    private boolean gameOver;
 
     public GameScreen(LetsRunGame game) {
         this.game = game;
@@ -103,7 +110,9 @@ public class GameScreen extends InputAdapter implements Screen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Log.d("Game", "touch down " + screenX + " - " + Gdx.graphics.getWidth());
+        if (gameOver) {
+            return false;
+        }
 
         if (screenX > Gdx.graphics.getWidth()/2) {
             // Foward - W
@@ -117,6 +126,11 @@ public class GameScreen extends InputAdapter implements Screen {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        if (gameOver) {
+            game.showMenu();
+            return false;
+        }
+
         if (screenX > Gdx.graphics.getWidth()/2) {
             // Foward - W
             car.accelerate(false);
@@ -135,34 +149,40 @@ public class GameScreen extends InputAdapter implements Screen {
         Gdx.gl.glClearColor( 0.2f, 0.2f, 0.2f, 1f );
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // renderer.render(world, camera.combined);
-        background.render(delta);
-        /*
-         * Set projection matrix to camera.combined, the same way we did with
-         * the debug renderer.
-         */
-        game.batch.setProjectionMatrix(camera.combined);
-        game.batch.begin();
+        if (DEBUG) {
+            renderer.render(world, camera.combined);
+            game.batch.setProjectionMatrix(camera.combined);
+            game.batch.begin();
+            carRenderer.render(game.batch);
+            game.batch.end();
+        } else {
+            background.render(delta);
+            /*
+             * Set projection matrix to camera.combined, the same way we did with
+             * the debug renderer.
+             */
+            game.batch.setProjectionMatrix(camera.combined);
+            game.batch.begin();
 
 
+            carRenderer.render(game.batch);
 
-        carRenderer.render(game.batch);
-
-        Vector2 v1 = new Vector2();
-        Vector2 v2 = new Vector2();
-        for(Fixture f : groundBody.getFixtureList()) {
-            EdgeShape shape = (EdgeShape) f.getShape();
-            shape.getVertex1(v1);
-            shape.getVertex2(v2);
-            for(float t = 0f; t <= 1; t += 0.1f) {
-                float w = 0.1f; //v2.x - v1.x;
-                float h = v1.y + t * (v2.y - v1.y); //Math.min(v2.y, v1.y);
-                spriteGround.setSize(w, h + 10);
-                spriteGround.setPosition(v1.x + t * (v2.x - v1.x), -10);
-                spriteGround.draw(game.batch);
+            Vector2 v1 = new Vector2();
+            Vector2 v2 = new Vector2();
+            for (Fixture f : groundBody.getFixtureList()) {
+                EdgeShape shape = (EdgeShape) f.getShape();
+                shape.getVertex1(v1);
+                shape.getVertex2(v2);
+                for (float t = 0f; t <= 1; t += 0.1f) {
+                    float w = 0.1f; //v2.x - v1.x;
+                    float h = v1.y + t * (v2.y - v1.y); //Math.min(v2.y, v1.y);
+                    spriteGround.setSize(w, h + 10);
+                    spriteGround.setPosition(v1.x + t * (v2.x - v1.x), -10);
+                    spriteGround.draw(game.batch);
+                }
             }
+            game.batch.end();
         }
-        game.batch.end();
 
         game.hudBatch.begin();
         game.font.setColor(Color.RED);
@@ -176,6 +196,15 @@ public class GameScreen extends InputAdapter implements Screen {
         String str = String.format("Record : %.1f", highDistance);
         BitmapFont.TextBounds size = game.font.getBounds(str);
         game.font.draw(game.hudBatch, str, Gdx.graphics.getWidth() - size.width - 10, Gdx.graphics.getHeight() - game.font.getAscent()*1.25f);
+
+        if (gameOver) {
+            str = "GAME OVER";
+            game.font.setColor(Color.RED);
+            game.font.setScale(6);
+            size = game.font.getBounds(str);
+            game.font.draw(game.hudBatch, str, Gdx.graphics.getWidth()/2 - size.width / 2, Gdx.graphics.getHeight()/2 - game.font.getAscent()*1.25f);
+        }
+
         game.hudBatch.end();
     }
 
@@ -214,6 +243,8 @@ public class GameScreen extends InputAdapter implements Screen {
         terrain = new Terrain(500, 261119780);
 
         world = new World(new Vector2(0, -10), true);
+        world.setContactListener(this);
+
         BodyDef bodyDef = new BodyDef();
         groundBody = world.createBody(bodyDef);
         slicePoly = new EdgeShape();
@@ -279,5 +310,38 @@ public class GameScreen extends InputAdapter implements Screen {
     public void dispose() {
         slicePoly.dispose();
         world.dispose();
+    }
+
+    @Override
+    public void beginContact(Contact contact) {
+        Fixture a = contact.getFixtureA();
+        Fixture b = contact.getFixtureB();
+
+        Body bA = a.getBody();
+        Body bB = b.getBody();
+
+        if (isGameOver(bA, b) || (isGameOver(bB, a))) {
+            gameOver = true;
+        }
+
+    }
+
+    boolean isGameOver(Body b, Fixture f) {
+        return (b == groundBody) && (f == car.getHitSensor());
+    }
+
+    @Override
+    public void endContact(Contact contact) {
+
+    }
+
+    @Override
+    public void preSolve(Contact contact, Manifold oldManifold) {
+
+    }
+
+    @Override
+    public void postSolve(Contact contact, ContactImpulse impulse) {
+
     }
 }

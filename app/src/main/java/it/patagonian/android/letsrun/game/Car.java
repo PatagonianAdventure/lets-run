@@ -4,10 +4,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import com.badlogic.gdx.physics.box2d.joints.WheelJoint;
 import com.badlogic.gdx.physics.box2d.joints.WheelJointDef;
 
@@ -19,6 +21,7 @@ public class Car {
     private final PolygonShape chassisShape;
     private final float width;
     private final float height;
+    private final Fixture hitBox;
     private Body chassis, leftWheel, rightWheel;
     private WheelJoint leftAxis, rightAxis;
     private float motorSpeed = 50f;
@@ -41,6 +44,15 @@ public class Car {
         MassData data = chassis.getMassData();
         data.center.x += width/16;
         chassis.setMassData(data);
+
+        // hitBox
+        chassisShape.setAsBox(width/3, height/20, new Vector2(0, height/2), 0);
+        chassisFixtureDef.shape = chassisShape;
+        float d = chassisFixtureDef.density;
+        chassisFixtureDef.density = 0.1f;
+        hitBox = chassis.createFixture(chassisFixtureDef);
+        hitBox.setSensor(true);
+        chassisFixtureDef.density = d;
 
         // left wheel
         wheelShape = new CircleShape();
@@ -72,8 +84,17 @@ public class Car {
 
         rightAxis = (WheelJoint) world.createJoint(axisDef);
 
+        // hit box to detect hit againts ground
+        chassisShape.setAsBox(width/4, height/20);
+        FixtureDef hit = new FixtureDef();
+        hit.shape = chassisShape;
+
         this.width = width;
         this.height = height;
+    }
+
+    public Fixture getHitSensor() {
+        return hitBox;
     }
 
     public void accelerate(boolean b) {
