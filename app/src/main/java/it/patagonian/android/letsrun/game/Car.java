@@ -24,26 +24,39 @@ public class Car {
     private final Fixture hitBox;
     private Body chassis, leftWheel, rightWheel;
     private WheelJoint leftAxis, rightAxis;
-    private float motorSpeed = 50f;
+    private float motorSpeed = 40f;
 
     public Car(World world, FixtureDef chassisFixtureDef, FixtureDef wheelFixtureDef, float x, float y, float width, float height) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(x, y);
 
+        chassis = world.createBody(bodyDef);
+
         // chassis
         chassisShape = new PolygonShape();
-        // counterclockwise order
-        // chassisShape.set(new float[] {-width/2, -height/2, width/2, -height/2, width/2, height/2, -width/2, height/2});
-        chassisShape.setAsBox(width/2, height/2);
-
         chassisFixtureDef.shape = chassisShape;
 
-        chassis = world.createBody(bodyDef);
+        chassisShape.set(p1);
         chassis.createFixture(chassisFixtureDef);
-        MassData data = chassis.getMassData();
-        data.center.x += width/16;
-        chassis.setMassData(data);
+        chassisShape.set(p2);
+        chassis.createFixture(chassisFixtureDef);
+        chassisShape.set(p3);
+        chassis.createFixture(chassisFixtureDef);
+        chassisShape.set(p4);
+        chassis.createFixture(chassisFixtureDef);
+        chassisShape.set(p5);
+        chassis.createFixture(chassisFixtureDef);
+        chassisShape.set(p6);
+        chassis.createFixture(chassisFixtureDef);
+        chassisShape.set(p7);
+        chassis.createFixture(chassisFixtureDef);
+        chassisShape.set(p8);
+        chassis.createFixture(chassisFixtureDef);
+        chassisShape.set(p9);
+        chassis.createFixture(chassisFixtureDef);
+        chassisShape.set(p10);
+        chassis.createFixture(chassisFixtureDef);
 
         // hitBox
         chassisShape.setAsBox(width/3, height/20, new Vector2(0, height/2), 0);
@@ -74,7 +87,7 @@ public class Car {
         axisDef.localAnchorA.set(-width/2 *0.65f + wheelShape.getRadius(), -height/2*1.1f);
         axisDef.frequencyHz = chassisFixtureDef.density * 1.2f;
         axisDef.localAxisA.set(Vector2.Y);
-        axisDef.maxMotorTorque = chassisFixtureDef.density * 17;
+        axisDef.maxMotorTorque = chassisFixtureDef.density * 10;
 
         leftAxis = (WheelJoint) world.createJoint(axisDef);
 
@@ -134,4 +147,89 @@ public class Car {
     public float getHeight() {
         return height;
     }
+
+    /* This scale down and translate the points created with an
+     * external tool. Not ideal but works for now.
+     */
+    float C = 58;
+    float OX = 2.0f;
+    float OY = 0.7f;
+
+    /* Chassis points */
+    Vector2 p1[] = new Vector2[] {
+            new Vector2(5.000f/C - OX, 16.000f/C - OY),
+            new Vector2(13.000f/C - OX, 18.000f/C - OY),
+            new Vector2(29.000f/C - OX, 51.000f/C - OY),
+            new Vector2(22.000f/C - OX, 56.000f/C - OY),
+            new Vector2(1.000f/C - OX, 49.000f/C - OY),
+            new Vector2(0.000f/C - OX, 24.000f/C - OY)
+    };
+    Vector2 p2[] = new Vector2[] {
+            new Vector2(156.000f/C - OX, 79.000f/C - OY),
+            new Vector2(119.000f/C - OX, 82.000f/C - OY),
+            new Vector2(107.000f/C - OX, 74.000f/C - OY),
+            new Vector2(104.000f/C - OX, 65.000f/C - OY),
+            new Vector2(102.000f/C - OX, 52.000f/C - OY),
+            new Vector2(113.000f/C - OX, 4.000f/C - OY),
+            new Vector2(139.000f/C - OX, 51.000f/C - OY),
+    };
+
+    Vector2 p3[] = new Vector2[] {
+            new Vector2(43.000f/C - OX, 9.000f/C - OY),
+            new Vector2(51.000f/C - OX, 21.000f/C - OY),
+            new Vector2(11.000f/C - OX, 18.000f/C - OY),
+            new Vector2(18.000f/C - OX, 12.000f/C - OY),
+            new Vector2(31.000f/C - OX, 8.000f/C - OY),
+    };
+
+    Vector2 p4[] = new Vector2[] {
+            new Vector2(231.000f/C - OX, 11.000f/C - OY),
+            new Vector2(227.000f/C - OX, 40.000f/C - OY),
+            new Vector2(222.000f/C - OX, 47.000f/C - OY),
+            new Vector2(202.000f/C - OX, 51.000f/C - OY),
+            new Vector2(211.000f/C - OX, 22.000f/C - OY),
+            new Vector2(216.000f/C - OX, 10.000f/C - OY),
+            new Vector2(220.000f/C - OX, 9.000f/C - OY),
+    };
+
+    Vector2 p5[] = new Vector2[] {
+            new Vector2(85.000f/C - OX, 7.000f/C - OY),
+            new Vector2(113.000f/C - OX, 4.000f/C - OY),
+            new Vector2(102.000f/C - OX, 52.000f/C - OY),
+            new Vector2(77.000f/C - OX, 21.000f/C - OY),
+    };
+
+    Vector2 p6[] = new Vector2[] {
+            new Vector2(176.000f/C - OX, 8.000f/C - OY),
+            new Vector2(185.000f/C - OX, 25.000f/C - OY),
+            new Vector2(167.000f/C - OX, 51.000f/C - OY),
+            new Vector2(139.000f/C - OX, 4.000f/C - OY),
+    };
+
+    Vector2 p7[] = new Vector2[] {
+            new Vector2(27.000f/C - OX, 51.000f/C - OY),
+            new Vector2(11.000f/C - OX, 18.000f/C - OY),
+            new Vector2(51.000f/C - OX, 21.000f/C - OY),
+            new Vector2(102.000f/C - OX, 52.000f/C - OY),
+    };
+
+    Vector2 p8[] = new Vector2[] {
+            new Vector2(51.000f/C - OX, 21.000f/C - OY),
+            new Vector2(77.000f/C - OX, 21.000f/C - OY),
+            new Vector2(102.000f/C - OX, 52.000f/C - OY),
+    };
+
+    Vector2 p9[] = new Vector2[] {
+            new Vector2(167.000f/C - OX, 51.000f/C - OY),
+            new Vector2(185.000f/C - OX, 25.000f/C - OY),
+            new Vector2(201.000f/C - OX, 26.000f/C - OY),
+            new Vector2(202.000f/C - OX, 51.000f/C - OY),
+    };
+
+    Vector2 p10[] = new Vector2[] {
+            new Vector2(201.000f/C - OX, 26.000f/C - OY),
+            new Vector2(211.000f/C - OX, 22.000f/C - OY),
+            new Vector2(202.000f/C - OX, 51.000f/C - OY),
+    };
+
 }

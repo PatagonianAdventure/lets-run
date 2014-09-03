@@ -1,5 +1,6 @@
 package it.patagonian.android.letsrun.screens;
 
+import android.graphics.Interpolator;
 import android.util.Log;
 
 import com.badlogic.gdx.Gdx;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -45,6 +47,8 @@ import it.patagonian.android.letsrun.game.Terrain;
  */
 public class GameScreen extends InputAdapter implements Screen, ContactListener {
     private static final boolean DEBUG = false;
+    private static final float ZOOM_MIN = 1f;
+    private static final float ZOOM_MAX = 2f;
 
     private final OrthographicCamera camera;
     private final int height;
@@ -75,7 +79,7 @@ public class GameScreen extends InputAdapter implements Screen, ContactListener 
 
         highDistance = prefs.getFloat("highDistance");
 
-        height = 12;
+        height = 15;
         ppu = Gdx.graphics.getHeight() / height;
         width = (int) Math.ceil(Gdx.graphics.getWidth() / ppu);
 
@@ -151,11 +155,11 @@ public class GameScreen extends InputAdapter implements Screen, ContactListener 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (DEBUG) {
-            renderer.render(world, camera.combined);
             game.batch.setProjectionMatrix(camera.combined);
             game.batch.begin();
             carRenderer.render(game.batch);
             game.batch.end();
+            renderer.render(world, camera.combined);
         } else {
             background.render(delta);
             /*
@@ -192,7 +196,7 @@ public class GameScreen extends InputAdapter implements Screen, ContactListener 
 
         game.font.setColor(Color.WHITE);
         game.font.setScale(3);
-        game.font.draw(game.hudBatch, String.format("Distancia : %.1f", distance), 10, Gdx.graphics.getHeight() - game.font.getAscent()*1.25f);
+        game.font.draw(game.hudBatch, String.format("Velocidad : %.1f", car.getSpeed().len()), 10, Gdx.graphics.getHeight() - game.font.getAscent()*1.25f);
 
         String str = String.format("Record : %.1f", highDistance);
         BitmapFont.TextBounds size = game.font.getBounds(str);
@@ -212,13 +216,16 @@ public class GameScreen extends InputAdapter implements Screen, ContactListener 
     private void update(float delta) {
         background.speed = car.getSpeed();
 
-        // TODO : Use a non-linear interpolator for a better effect.
-        float v = Math.min(car.getSpeed().len(), 10)/3f;
-        float newHeight = height * 10 / (10 - v);
-        float newWidth = width * 10 / (10 - v);
+        float v = Math.max(Math.min(car.getSpeed().x, 1), 0);
+        float step = Interpolation.exp5In.apply(ZOOM_MIN, ZOOM_MAX, v/10f);
+        if (step < ZOOM_MIN) step = ZOOM_MIN;
+        if (step > ZOOM_MAX) step = ZOOM_MAX;
+
+        float newHeight = height * step;
+        float newWidth = width * step;
         camera.setToOrtho(false, newWidth, newHeight);
 
-        camera.position.x = car.getChassis().getPosition().x + width/4;
+        camera.position.x = car.getChassis().getPosition().x + newWidth/4;
         camera.position.y = car.getChassis().getPosition().y;
 
         float cameraMovement = camera.position.x - lastCameraPosition;
